@@ -8,6 +8,7 @@ from pandasai import SmartDataframe
 from pandasai.llm import OpenAI
 import os
 from PIL import Image
+import re
 
 # Set backend before import pyplot (Do not show a new windows after plotting)
 matplotlib.use("Agg", force=False)
