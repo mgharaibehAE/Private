@@ -58,17 +58,22 @@ class MyStResponseParser(ResponseParser):
             st.dataframe(result['value'])
 
         elif result['type'] == "plot":
-            # Retrieve the plotting code from the result
+            # Retrieve the generated plotting code
             plot_code = result["value"]
-            
+
             # Remove any lines containing plt.savefig( or plt.close(
             cleaned_lines = [
                 line for line in plot_code.splitlines()
                 if "plt.savefig(" not in line and "plt.close(" not in line
             ]
-            plot_code_clean = "\n".join(cleaned_lines)
+            # Join the lines and remove any leading whitespace
+            plot_code_clean = "\n".join(cleaned_lines).lstrip()
 
-            # Set up the local environment with the original DataFrame
+            # Debug: show the cleaned plotting code
+            st.write("Executing plot code:")
+            st.code(plot_code_clean)
+
+            # Set up the local environment with required variables
             df = st.session_state.get("original_df")
             if df is None:
                 st.error("Original DataFrame not found in session state.")
@@ -78,11 +83,6 @@ class MyStResponseParser(ResponseParser):
             local_env = {"df": df, "dfs": dfs, "pd": pd, "plt": plt}
 
             try:
-                # Debug: show the cleaned plotting code
-                st.write("Executing plot code:")
-                st.code(plot_code_clean)
-
-                # Execute the cleaned code
                 exec(plot_code_clean, {}, local_env)
                 fig = plt.gcf()
                 if fig.axes:
@@ -98,6 +98,7 @@ class MyStResponseParser(ResponseParser):
         else:
             st.write(result['value'])
         return
+
 
 
 @st.cache_data
