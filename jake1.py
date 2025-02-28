@@ -1,5 +1,6 @@
 from pandasai.helpers.openai_info import get_openai_callback
 import matplotlib
+import matplotlib.pyplot as plt
 from pandasai.responses.response_parser import ResponseParser
 from pandasai.connectors import PandasConnector
 import streamlit as st
