@@ -255,7 +255,7 @@ def main_page():
         agent = SmartDataframe(connector, config={
             "llm": llm,
             "save_charts": False,       # CRITICAL: Prevent local saving
-            "open_charts": False,       # Avoid external plot rendering
+            "open_charts": True,       # Avoid external plot rendering
             "custom_whitelisted_dependencies": ["matplotlib"],
             "conversational": False,
             "response_parser": MyStResponseParser,
