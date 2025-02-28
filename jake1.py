@@ -58,18 +58,30 @@ class MyStResponseParser(ResponseParser):
             st.dataframe(result['value'])
 
         elif result['type'] == "plot":
-            # Retrieve the generated plotting code
+            # Retrieve the generated plotting code from the result
             plot_code = result["value"]
 
-            # Comment out any plt.savefig and plt.close calls
-            plot_code_clean = plot_code.replace("plt.savefig", "# plt.savefig")
-            plot_code_clean = plot_code_clean.replace("plt.close", "# plt.close")
+            # Remove lines that include plt.savefig or plt.close using line-by-line filtering
+            cleaned_lines = []
+            for line in plot_code.splitlines():
+                if "plt.savefig" in line or "plt.close" in line:
+                    st.write("Removing line:", line)
+                else:
+                    cleaned_lines.append(line)
+            plot_code_clean = "\n".join(cleaned_lines).strip()
 
-            # Debug: display the cleaned code so you can verify it looks correct
-            st.write("Cleaned plot code:")
-            st.code(plot_code_clean)
+            # If the cleaned code looks like a file path (e.g. "/mount/src/private/exports/charts/temp_chart.png"),
+            # then assume that the code is trying to save the plot and instead display the current figure inline.
+            if plot_code_clean.startswith("/") and plot_code_clean.endswith(".png"):
+                st.warning("Generated code returns a file path. Displaying the current figure inline instead.")
+                fig = plt.gcf()
+                if fig.axes:
+                    st.pyplot(fig)
+                else:
+                    st.warning("No plot axes found in the current figure.")
+                return
 
-            # Set up the local environment with the original DataFrame and required libraries
+            # Otherwise, set up the local environment for executing the plot code.
             df = st.session_state.get("original_df")
             if df is None:
                 st.error("Original DataFrame not found in session state.")
@@ -79,6 +91,8 @@ class MyStResponseParser(ResponseParser):
             local_env = {"df": df, "dfs": dfs, "pd": pd, "plt": plt}
 
             try:
+                st.write("Executing plot code:")
+                st.code(plot_code_clean)
                 exec(plot_code_clean, {}, local_env)
                 fig = plt.gcf()
                 if fig.axes:
@@ -94,7 +108,6 @@ class MyStResponseParser(ResponseParser):
         else:
             st.write(result['value'])
         return
-
 
 
 @st.cache_data
