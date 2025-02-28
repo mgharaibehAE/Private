@@ -15,13 +15,16 @@ matplotlib.use("Agg", force=False)
 # Page setting
 st.set_page_config(layout="wide")
 
-# Login block
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
+
 if not st.session_state['logged_in']:
     st.title("Login")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
-        if username == "Jake" and password == "ClecoJake":
+        # Compare credentials against the ones stored in the secrets TOML file.
+        if username == st.secrets["login"]["username"] and password == st.secrets["login"]["password"]:
             st.session_state['logged_in'] = True
             st.success("Logged in successfully!")
         else:
