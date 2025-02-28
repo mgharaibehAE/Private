@@ -94,6 +94,7 @@ class MyStResponseParser(ResponseParser):
                 st.write("Executing plot code:")
                 st.code(plot_code_clean)
                 exec(plot_code_clean, {}, local_env)
+                fig.set_size_inches(12, 8)
                 fig = plt.gcf()
                 if fig.axes:
                     st.pyplot(fig)
