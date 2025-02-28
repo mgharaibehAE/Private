@@ -57,22 +57,28 @@ class MyStResponseParser(ResponseParser):
         if result['type'] == "dataframe":
             st.dataframe(result['value'])
 
-        elif result['type'] == 'plot':
+        elif result['type'] == "plot":
+            # Get the plotting code from the result
             plot_code = result["value"]
-            elif result['type'] == 'plot':\
-                plot_code = result["value"]
 
-
-            # Remove any plt.savefig or plt.close commands from the code
+            # Remove any plt.savefig(...) or plt.close() commands from the code
             plot_code_clean = re.sub(r"plt\.savefig\(.*?\)", "", plot_code)
             plot_code_clean = re.sub(r"plt\.close\(\)", "", plot_code_clean)
 
-            # Explicit local environment with original DataFrame
-            df = st.session_state['original_df'].copy()
+            # Create a local environment for executing the plot code
+            df = st.session_state.get("original_df")
+            if df is None:
+                st.error("Original DataFrame not found in session state.")
+                return
+
             dfs = [df]
             local_env = {"df": df, "dfs": dfs, "pd": pd, "plt": plt}
 
             try:
+                # Debug output to see what code will be executed
+                st.write("Executing plot code:")
+                st.code(plot_code_clean)
+                
                 exec(plot_code_clean, {}, local_env)
                 fig = plt.gcf()
                 if fig.axes:
