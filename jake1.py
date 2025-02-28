@@ -59,6 +59,9 @@ class MyStResponseParser(ResponseParser):
 
         elif result['type'] == 'plot':
             plot_code = result["value"]
+        elif result['type'] == 'plot':\
+            plot_code = result["value"]
+
 
             # Remove any plt.savefig or plt.close commands from the code
             plot_code_clean = re.sub(r"plt\.savefig\(.*?\)", "", plot_code)
