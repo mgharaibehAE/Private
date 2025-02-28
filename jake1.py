@@ -244,7 +244,7 @@ field_descriptions = {
     "DA DnRamp ($/MWh)": "Price per megawatt-hour for Day-Ahead Down Ramp Capability.",}
 
 def main_page():
-    st.header("MISO AI Analytics Tool")
+    st.header("MISO AI Analytical Tool")
 
     # Button to load the dataset into memory
     if st.button("Load Dataset into Memory", type="primary"):
