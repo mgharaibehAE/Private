@@ -86,15 +86,18 @@ class MyStResponseParser(ResponseParser):
 
 @st.cache_data
 def load_data():
-    # Construct the path relative to the current file (jake1.py)
-    current_dir = os.path.dirname(__file__)
-    csv_path = os.path.join(current_dir, "..", "data", "secret_data.csv")
+    # Construct the path to the CSV file in the same directory as jake1.py
+    csv_path = os.path.join(os.path.dirname(__file__), "secret_data.csv")
     csv_path = os.path.abspath(csv_path)
-    st.write("CSV path:", csv_path)  # Debug output
+    st.write("CSV file path:", csv_path)  # Debug output; remove in production
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"CSV file not found at {csv_path}")
     df = pd.read_csv(csv_path, low_memory=False)
     return df
+
+# Load data into session state if not already present
+if 'original_df' not in st.session_state:
+    st.session_state['original_df'] = load_data()
 
 
 if 'original_df' not in st.session_state:
