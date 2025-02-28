@@ -84,12 +84,10 @@ class MyStResponseParser(ResponseParser):
             st.write(result['value'])
         return
 
-
 @st.cache_data
 def load_data():
-    # Get the directory containing the current script (jake1.py)
+    # Construct the path relative to the current file (jake1.py)
     current_dir = os.path.dirname(__file__)
-    # Build the absolute path to the CSV file from there
     csv_path = os.path.join(current_dir, "..", "data", "secret_data.csv")
     csv_path = os.path.abspath(csv_path)
     st.write("CSV path:", csv_path)  # Debug output
@@ -97,6 +95,7 @@ def load_data():
         raise FileNotFoundError(f"CSV file not found at {csv_path}")
     df = pd.read_csv(csv_path, low_memory=False)
     return df
+
 
 if 'original_df' not in st.session_state:
     st.session_state['original_df'] = load_data()
