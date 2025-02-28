@@ -1,5 +1,6 @@
-pandasai==2.4.2
 matplotlib==3.10.0
 streamlit==1.42.0
 pandas==1.5.3
 Pillow==10.4.0
+pandasai==2.4.2
+numpy==1.26.4
