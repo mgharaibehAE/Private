@@ -58,22 +58,27 @@ class MyStResponseParser(ResponseParser):
             st.dataframe(result['value'])
 
         elif result['type'] == "plot":
-            # Retrieve the generated plotting code
+            # Retrieve the plotting code from the result
             plot_code = result["value"]
 
-            # Remove any lines containing plt.savefig( or plt.close(
-            cleaned_lines = [
-                line for line in plot_code.splitlines()
-                if "plt.savefig(" not in line and "plt.close(" not in line
-            ]
-            # Join the lines and remove any leading whitespace
+            # Debug: show the original plotting code
+            st.write("Original plot code:")
+            st.code(plot_code)
+
+            # Remove any lines that include plt.savefig or plt.close
+            cleaned_lines = []
+            for line in plot_code.splitlines():
+                if "plt.savefig" in line or "plt.close" in line:
+                    st.write("Removing line:", line)
+                else:
+                    cleaned_lines.append(line)
             plot_code_clean = "\n".join(cleaned_lines).lstrip()
 
             # Debug: show the cleaned plotting code
-            st.write("Executing plot code:")
+            st.write("Cleaned plot code:")
             st.code(plot_code_clean)
 
-            # Set up the local environment with required variables
+            # Set up the local environment with the original DataFrame
             df = st.session_state.get("original_df")
             if df is None:
                 st.error("Original DataFrame not found in session state.")
