@@ -15,7 +15,7 @@ import re
 matplotlib.use("Agg", force=False)
 
 # Page setting
-st.set_page_config(layout="wide")
+st.set_page_config(layout="regular")
 
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
